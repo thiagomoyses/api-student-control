@@ -17,9 +17,13 @@ model User {
 
   firstName String
   lastName  String
-  email     String
+  email     String @unique
   hash      String
-  idUser    String
+  idUser    String @unique
+
+  student Student[]
+  
+  @@map("users")
 }
 
 model Student {
@@ -30,6 +34,11 @@ model Student {
   firstName          String
   lastName           String
   registrationNumber String
-  email              String?
+  email              String? @unique
   phone              String?
+
+  userId String
+  user User @relation(fields: [userId], references: [idUser])
+
+  @@map("students")
 }
