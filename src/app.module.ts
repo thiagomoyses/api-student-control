@@ -6,9 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { StudentModule } from './student/student.module';
 
 @Module({
-  imports: [AuthModule, UserModule, PrismaModule, ConfigModule.forRoot({
-    isGlobal: true
-  }), StudentModule],
+  imports: [AuthModule, UserModule, PrismaModule, ConfigModule.forRoot({ isGlobal: true }), StudentModule],
   controllers: [],
   providers: [],
 })
