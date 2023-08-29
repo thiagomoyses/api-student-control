@@ -17,8 +17,4 @@ export class AuthDto {
     @IsNotEmpty()
     @IsString()
     password: string
-
-    @IsNotEmpty()
-    @IsString()
-    userRefCode: string
 }

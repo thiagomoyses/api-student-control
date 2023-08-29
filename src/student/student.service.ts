@@ -18,7 +18,9 @@ export class StudentService {
             const nameFirstLeter = dto.firstName.substring(0, 1);
             const lastNameFirstLeter = dto.lastName.substring(0, 1);
             const date = new Date();
-            const studentRefCode = nameFirstLeter.toUpperCase() + lastNameFirstLeter.toUpperCase() + date.getTime();
+            const randomNumber = Math.floor(Math.random() * 900) + 100;
+
+            const studentRefCode = nameFirstLeter.toUpperCase() + lastNameFirstLeter.toUpperCase() + randomNumber + date.getTime();
 
             //save new student
             const student = await this.prisma.student.create({
@@ -31,6 +33,8 @@ export class StudentService {
                     studentRefCode: studentRefCode
                 }
             });
+
+            delete student.userId;
 
             return student;
         } catch (error) {
