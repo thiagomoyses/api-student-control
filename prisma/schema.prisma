@@ -15,14 +15,14 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  firstName String
-  lastName  String
-  email     String @unique
-  hash      String
-  userRefCode    String @unique
+  firstName   String
+  lastName    String
+  email       String @unique
+  hash        String
+  userRefCode String @unique
 
   student Student[]
-  
+
   @@map("users")
 }
 
@@ -31,14 +31,14 @@ model Student {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  firstName          String
-  lastName           String
-  registrationNumber String
-  email              String? @unique
-  phone              String?
+  firstName      String
+  lastName       String
+  studentRefCode String @unique
+  email          String? @unique
+  phone          String?
 
   userId String
-  user User @relation(fields: [userId], references: [userRefCode])
+  user   User   @relation(fields: [userId], references: [userRefCode])
 
   @@map("students")
 }
