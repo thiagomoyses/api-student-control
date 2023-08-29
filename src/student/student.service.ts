@@ -9,9 +9,21 @@ export class StudentService {
 
     constructor(private prisma: PrismaService){}
 
-    index(){
-        return "cheguei";    
+    async index(user: User){
+
+        try {
+            const studentList = await this.prisma.student.findMany({
+                where: {
+                    userId: user.userRefCode
+                }
+            });
+    
+            return this.response(studentList);
+        } catch (error) {
+            throw error;
+        }
     }
+
     async store(user: User, dto: StudentDto){
         try {
             //generate StudentRef
@@ -36,7 +48,7 @@ export class StudentService {
 
             delete student.userId;
 
-            return student;
+            return this.response(student);
         } catch (error) {
             if(error instanceof PrismaClientKnownRequestError){
                 switch (error.code) {
@@ -50,5 +62,14 @@ export class StudentService {
             }
             
         }
+    }
+
+    private response(payload){
+        const response = {
+            "message": "success",
+            "data": {payload}
+        }
+
+        return response;
     }
 }

@@ -13,8 +13,8 @@ export class StudentController {
 
     @HttpCode(HttpStatus.OK)
     @Get('all')
-    index(){
-        return this.studentService.index();
+    index(@GetUser() user: User){
+        return this.studentService.index(user);
     }
 
     @HttpCode(HttpStatus.CREATED)
