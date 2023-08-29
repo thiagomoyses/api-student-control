@@ -19,7 +19,7 @@ model User {
   lastName  String
   email     String @unique
   hash      String
-  idUser    String @unique
+  userRefCode    String @unique
 
   student Student[]
   
@@ -38,7 +38,7 @@ model Student {
   phone              String?
 
   userId String
-  user User @relation(fields: [userId], references: [idUser])
+  user User @relation(fields: [userId], references: [userRefCode])
 
   @@map("students")
 }
