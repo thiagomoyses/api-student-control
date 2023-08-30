@@ -1,6 +1,6 @@
-import { IsEmail, IsInt, IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsEmail, IsInt, IsNotEmpty, IsString } from "class-validator";
 
-export class StudentDto {
+export class ParentDto{
     
     @IsNotEmpty()
     @IsString()
@@ -10,15 +10,14 @@ export class StudentDto {
     @IsString()
     lastName: string
 
-    @IsNotEmpty()
+    @IsString()
     @IsEmail()
     email: string
 
-    @IsNotEmpty()
     @IsString()
     phone: string
 
-    @IsNotEmpty()
-    @IsInt()
-    parent_id: number
+    @IsArray()
+    @IsInt({ each: true })
+    student: number[];
 }

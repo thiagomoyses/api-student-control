@@ -44,7 +44,6 @@ model Student {
   parent_id Int
   parent    Parent @relation(fields: [parent_id], references: [id])
 
-  subject_id String
   subject    Subject[]
 
   @@map("students")

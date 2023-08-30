@@ -7,9 +7,9 @@ import { User } from '@prisma/client';
 @Injectable()
 export class StudentService {
 
-    constructor(private prisma: PrismaService){}
+    constructor(private prisma: PrismaService) { }
 
-    async index(user: User){
+    async index(user: User) {
 
         try {
             const studentList = await this.prisma.student.findMany({
@@ -17,14 +17,14 @@ export class StudentService {
                     userId: user.userRefCode
                 }
             });
-    
+
             return this.response(studentList);
         } catch (error) {
             throw error;
         }
     }
 
-    async store(user: User, dto: StudentDto){
+    async store(user: User, dto: StudentDto) {
         try {
             //generate StudentRef
             const nameFirstLeter = dto.firstName.substring(0, 1);
@@ -39,10 +39,11 @@ export class StudentService {
                 data: {
                     firstName: dto.firstName,
                     lastName: dto.lastName,
+                    studentRefCode: studentRefCode,
                     email: dto.email,
                     phone: dto.phone,
-                    userId: user.userRefCode,
-                    studentRefCode: studentRefCode
+                    user: { connect: { userRefCode: user.userRefCode } },
+                    parent: { connect: { id: dto.parent_id } }
                 }
             });
 
@@ -50,24 +51,24 @@ export class StudentService {
 
             return this.response(student);
         } catch (error) {
-            if(error instanceof PrismaClientKnownRequestError){
+            if (error instanceof PrismaClientKnownRequestError) {
                 switch (error.code) {
                     case 'P2002':
                         throw new ForbiddenException('Student Already Registered!');
                     default:
                         break;
                 }
-            }else{
+            } else {
                 throw error;
             }
-            
+
         }
     }
 
-    private response(payload){
+    private response(payload) {
         const response = {
             "message": "success",
-            "data": {payload}
+            "data": { payload }
         }
 
         return response;
