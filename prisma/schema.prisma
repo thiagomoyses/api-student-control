@@ -22,6 +22,7 @@ model User {
   userRefCode String @unique
 
   student Student[]
+  parent Parent[]
 
   @@map("users")
 }
@@ -33,12 +34,50 @@ model Student {
 
   firstName      String
   lastName       String
-  studentRefCode String @unique
+  studentRefCode String  @unique
   email          String? @unique
   phone          String?
 
   userId String
   user   User   @relation(fields: [userId], references: [userRefCode])
 
+  parent_id Int
+  parent    Parent @relation(fields: [parent_id], references: [id])
+
+  subject    Subject[]
+
   @@map("students")
+}
+
+model Parent {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  firstName String
+  lastName  String
+
+  email String? @unique
+  phone String  @unique
+
+  userId String
+  user User @relation(fields: [userId], references: [userRefCode])
+
+  student Student[]
+
+  @@map("parents")
+}
+
+model Subject {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String @unique
+
+  studentRefId String
+
+  studentId    Student[]
+
+  @@map("Subjects")
 }
