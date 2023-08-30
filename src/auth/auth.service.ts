@@ -20,6 +20,14 @@ export class AuthService {
         const hash = await argon.hash(dto.password);
 
         try {
+            //create userRefCode
+            const nameFirstLeter = dto.firstName.substring(0, 1);
+            const lastNameFirstLeter = dto.lastName.substring(0, 1);
+            const date = new Date();
+            const randomNumber = Math.floor(Math.random() * 900) + 100;
+            
+            const userRefCode = nameFirstLeter.toUpperCase() + lastNameFirstLeter.toUpperCase() + randomNumber + date.getTime();
+
             //save and return
             const user = await this.prisma.user.create({
                 data: {
@@ -27,14 +35,15 @@ export class AuthService {
                     lastName: dto.lastName,
                     email: dto.email,
                     hash,
-                    userRefCode: dto.userRefCode
+                    userRefCode: userRefCode
                     
                 },
                 select: {
                     id: true,
                     firstName: true,
                     lastName: true,
-                    email: true
+                    email: true,
+                    userRefCode: true
                 }
             });
 
