@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
 import { StudentDto } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
@@ -33,6 +33,19 @@ export class StudentService {
             const randomNumber = Math.floor(Math.random() * 900) + 100;
 
             const studentRefCode = nameFirstLeter.toUpperCase() + lastNameFirstLeter.toUpperCase() + randomNumber + date.getTime();
+
+
+            //check if student already exist
+            const getStudent = await this.prisma.student.findFirst({
+                where: {
+                     firstName: dto.firstName,
+                     lastName: dto.lastName,
+                     userId: user.userRefCode
+                }
+            });
+
+            if(getStudent) throw new ConflictException("Student already registered!");
+
 
             //save new student
             const student = await this.prisma.student.create({
