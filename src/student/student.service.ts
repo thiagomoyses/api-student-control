@@ -1,6 +1,6 @@
 import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
 import { StudentDto } from './dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { User } from '@prisma/client';
 
