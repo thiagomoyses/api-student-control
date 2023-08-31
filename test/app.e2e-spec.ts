@@ -6,11 +6,13 @@ import { AuthDto } from '../src/auth/dto';
 import * as pactum from 'pactum';
 import { ParentDto } from '../src/parent/dto';
 import { StudentDto } from '../src/student/dto';
+import { SubjectDto } from 'src/subject/dto';
 
 describe('# App e2e', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let parentId: any;
+  let studentRefId: string;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -125,11 +127,31 @@ describe('# App e2e', () => {
         })
         .withBody(dto)
         .expectStatus(201)
-        .inspect()
+
+      studentRefId = '$S{studentRefCode}';
 
       return postReq;
 
     });
   })
 
+  describe('## SUBJECT', () => {
+    it("POST [/subject/store] - Should create a new subject", () => {
+        const dto: SubjectDto = {
+          name: "Matematica",
+          studentRefId: studentRefId
+        }
+
+        const postReq = pactum
+          .spec()
+          .post('/subject/store')
+          .withHeaders({
+            Authorization: 'Bearer $S{userToken}'
+          })
+          .withBody(dto)
+          .expectStatus(201)
+
+        return postReq;
+    });
+  });
 })
