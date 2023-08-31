@@ -8,18 +8,18 @@ export class SubjectService {
 
     constructor(private prisma: PrismaService) { }
 
-    index() {
+    async index() {
         try {
-            return this.prisma.subject.findMany();
+            return await this.prisma.subject.findMany();
         } catch (error) {
             throw error;
         }
     }
 
-    store(user: User, dto: SubjectDto) {
+    async store(user: User, dto: SubjectDto) {
         try {
             //check if subject already exist
-            const getSubject = this.prisma.subject.findFirst({
+            const getSubject = await this.prisma.subject.findFirst({
                 where: {
                     name: dto.name
                 }
@@ -28,7 +28,7 @@ export class SubjectService {
             if(getSubject) throw new ConflictException('Subject already exist!');
             
             //if doesnt, save it in DB
-            const newSubject = this.prisma.subject.create({
+            const newSubject = await this.prisma.subject.create({
                 data: {
                     name: dto.name
                 }
