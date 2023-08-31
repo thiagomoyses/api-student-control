@@ -6,9 +6,10 @@ import { ConfigModule } from '@nestjs/config';
 import { StudentModule } from './student/student.module';
 import { JsonMiddleware } from './middlewares';
 import { ParentModule } from './parent/parent.module';
+import { SubjectModule } from './subject/subject.module';
 
 @Module({
-  imports: [AuthModule, UserModule, PrismaModule, ConfigModule.forRoot({ isGlobal: true }), StudentModule, ParentModule],
+  imports: [AuthModule, UserModule, PrismaModule, ConfigModule.forRoot({ isGlobal: true }), StudentModule, ParentModule, SubjectModule],
   controllers: [],
   providers: [],
 })

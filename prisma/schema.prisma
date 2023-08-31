@@ -27,28 +27,6 @@ model User {
   @@map("users")
 }
 
-model Student {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  firstName      String
-  lastName       String
-  studentRefCode String  @unique
-  email          String? @unique
-  phone          String?
-
-  userId String
-  user   User   @relation(fields: [userId], references: [userRefCode])
-
-  parent_id Int
-  parent    Parent @relation(fields: [parent_id], references: [id])
-
-  subject    Subject[]
-
-  @@map("students")
-}
-
 model Parent {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -68,6 +46,28 @@ model Parent {
   @@map("parents")
 }
 
+model Student {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  firstName      String
+  lastName       String
+  studentRefCode String  @unique
+  email          String? @unique
+  phone          String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [userRefCode])
+
+  parent_id Int
+  parent    Parent @relation(fields: [parent_id], references: [id])
+
+  subject    StudenSubject[]
+
+  @@map("students")
+}
+
 model Subject {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -75,9 +75,20 @@ model Subject {
 
   name String @unique
 
-  studentRefId String
-
-  studentId    Student[]
+  student    StudenSubject[]
 
   @@map("Subjects")
+}
+
+model StudenSubject {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student Student @relation(fields: [studentRef], references: [studentRefCode])
+  studentRef String
+
+  subject Subject @relation(fields: [subjectId], references: [id])
+  subjectId Int
+
+  @@id([studentRef, subjectId])
 }
