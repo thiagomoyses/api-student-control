@@ -138,8 +138,7 @@ describe('# App e2e', () => {
   describe('## SUBJECT', () => {
     it("POST [/subject/store] - Should create a new subject", () => {
         const dto: SubjectDto = {
-          name: "Matematica",
-          studentRefId: studentRefId
+          name: "Matematica"
         }
 
         const postReq = pactum
@@ -152,6 +151,18 @@ describe('# App e2e', () => {
           .expectStatus(201)
 
         return postReq;
+    });
+
+    it("POST [/subject/all] - Should get all subjects", () => {
+      const getReq = pactum
+        .spec()
+        .get('/subject/all')
+        .withHeaders({
+          Authorization: 'Bearer $S{userToken}'
+        })
+        .expectStatus(200)
+
+      return getReq;
     });
   });
 })

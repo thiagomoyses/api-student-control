@@ -1,7 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { SubjectDto } from './dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { SubjecUpdatetDto } from './dto/subject.update.dto';
 
 @Injectable()
 export class SubjectService {
@@ -39,5 +40,27 @@ export class SubjectService {
         } catch (error) {
             throw error;
         }
+    }
+
+    async update(id: number, dto: SubjecUpdatetDto){
+        //check if subject exist
+        const getSubject = await this.prisma.subject.findFirst({
+            where: {
+                id: id
+            }
+        });
+
+        if(!getSubject) throw new NotFoundException('Subject not found!');
+
+        const updateSubject = await this.prisma.subject.update({
+            where: {
+                id: getSubject.id
+            },
+            data: {
+                name: dto.name
+            }
+        });
+
+        return updateSubject;
     }
 }
