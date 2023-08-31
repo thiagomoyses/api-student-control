@@ -30,7 +30,7 @@ describe('# App e2e', () => {
     await app.init();
     await app.listen(3333);
   });
-  
+
   afterAll(() => {
     app.close();
   });
@@ -49,21 +49,20 @@ describe('# App e2e', () => {
         .post('/auth/signup')
         .withBody(dto)
         .expectStatus(201)
-        .inspect()
 
       return postReq;
     });
 
     it('### POST [/auth/signin] - Should login!', () => {
       const postReq = pactum
-      .spec()
-      .post('/auth/signin')
-      .withBody({
-        email: dto.email,
-        password: dto.password
-      })
-      .expectStatus(200)
-      .stores('userToken', 'access_token')
+        .spec()
+        .post('/auth/signin')
+        .withBody({
+          email: dto.email,
+          password: dto.password
+        })
+        .expectStatus(200)
+        .stores('userToken', 'access_token')
 
       return postReq;
     });
@@ -89,9 +88,9 @@ describe('# App e2e', () => {
         .expectStatus(201)
         .stores('parentId', 'id');
 
-        parentId = '$S{parentId}';
+      parentId = '$S{parentId}';
 
-        return postReq;
+      return postReq;
     });
 
     it('### GET [/parent/all] - Should get all parents.', () => {
@@ -103,7 +102,7 @@ describe('# App e2e', () => {
         })
         .expectStatus(200)
 
-        return postReq;
+      return postReq;
     })
   });
 
@@ -128,7 +127,7 @@ describe('# App e2e', () => {
         .expectStatus(201)
         .inspect()
 
-        return postReq;
+      return postReq;
 
     });
   })
