@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '..//auth/guard';
@@ -17,9 +17,9 @@ export class GradebookController {
         return this.gradebookService.index(user);
     }
 
-    @HttpCode(HttpStatus.OK)
-    @Post('store:id')
-    store(@Param() studentRefCode: string, @GetUser() user: User, dto: GradebookDto){
+    @HttpCode(HttpStatus.CREATED)
+    @Post('store/:studentRefCode')
+    store(@Param('studentRefCode') studentRefCode: string, @GetUser() user: User, @Body() dto: GradebookDto){
         return this.gradebookService.store(studentRefCode, user, dto);
     }
 

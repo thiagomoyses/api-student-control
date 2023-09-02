@@ -9,10 +9,10 @@ export class GradebookService {
 
     constructor(private prisma: PrismaService, private readonly responseService: ResponseService) { }
 
-    index(user: User) {
+    async index(user: User) {
 
         try {
-            const getAll = this.prisma.gradeBook.findMany({
+            const getAll = await this.prisma.gradeBook.findMany({
                 where: {
                     userId: user.userRefCode
                 }
@@ -24,30 +24,30 @@ export class GradebookService {
         }
     }
 
-    store(studentRefCode: string, user: User, dto: GradebookDto) {
+    async store(studentRefCode: string, user: User, dto: GradebookDto) {
 
         try {
             //look for user
-            const getStudent = this.prisma.student.findUnique({
+            const getStudent = await this.prisma.student.findUnique({
                 where: {
                     studentRefCode: studentRefCode
                 }
             });
 
-            if (!getStudent) throw new NotFoundException("Student does not exist!");
+            if (!getStudent) return new NotFoundException("Student does not exist!");
 
             //look for subject
-            const getSubject = this.prisma.subject.findUnique({
+            const getSubject = await this.prisma.subject.findUnique({
                 where: {
                     id: dto.subject_id
                 }
             })
 
-            if (!getSubject) throw new NotFoundException("Subject does not exist!");
+            if (!getSubject) return new NotFoundException("Subject does not exist!");
 
 
             //Add new grade
-            const newGrade = this.prisma.gradeBook.create({
+            const newGrade = await this.prisma.gradeBook.create({
                 data: {
                     studentRef: studentRefCode,
                     subjectId: dto.subject_id,
@@ -58,7 +58,8 @@ export class GradebookService {
 
             return this.responseService.positiveResponse(newGrade);
         } catch (error) {
-            throw new InternalServerErrorException('We had a probem, try again later!');
+            throw error;
+            // throw new InternalServerErrorException('We had a probem, try again later!');
         }
     }
 

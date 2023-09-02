@@ -12,7 +12,7 @@ describe('# App e2e', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let parentId: any;
-  let studentRefId: string;
+  let studentRefCode: string;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -126,9 +126,10 @@ describe('# App e2e', () => {
           Authorization: 'Bearer $S{userToken}'
         })
         .withBody(dto)
+        .stores("studentRefCode", "data.studentRefCode")
         .expectStatus(201)
 
-      studentRefId = '$S{studentRefCode}';
+      studentRefCode = "$S{studentRefCode}";
 
       return postReq;
 
@@ -148,6 +149,7 @@ describe('# App e2e', () => {
             Authorization: 'Bearer $S{userToken}'
           })
           .withBody(dto)
+          .stores("subjectId", "data.id")
           .expectStatus(201)
 
         return postReq;
@@ -163,6 +165,39 @@ describe('# App e2e', () => {
         .expectStatus(200)
 
       return getReq;
+    });
+  });
+
+  describe('## GRADEBOOK', () => {
+
+    it("POST [/gradebook/store/studentRefCode] - Should create a new grade", () => {
+      let url = "/gradebook/store/" + studentRefCode;
+      
+      const postGrade = pactum
+      .spec()
+      .post(url)
+      .withHeaders({
+        Authorization: 'Bearer $S{userToken}'
+      })
+      .withBody({
+        subject_id: '$S{subjectId}',
+        grade: 9.5
+      })
+      .expectStatus(201)
+
+      return postGrade;
+    });
+
+    it("GET [/gradebook/all] - Should return all grades", () => {
+      const getGrades = pactum
+        .spec()
+        .get('/gradebook/all')
+        .withHeaders({
+          Authorization: 'Bearer $S{userToken}'
+        })
+        .expectStatus(200)
+
+        return getGrades;
     });
   });
 })

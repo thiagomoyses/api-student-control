@@ -54,7 +54,7 @@ export class SubjectService {
                 }
             });
 
-            if (!getSubject) throw new NotFoundException('Subject not found!');
+            if (!getSubject) return new NotFoundException('Subject not found!');
 
             const updateSubject = await this.prisma.subject.update({
                 where: {
