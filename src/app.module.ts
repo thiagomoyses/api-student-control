@@ -8,6 +8,7 @@ import { JsonMiddleware } from './middlewares';
 import { ParentModule } from './parent/parent.module';
 import { SubjectModule } from './subject/subject.module';
 import { ResponseModule } from './response/response.module';
+import { GradebookModule } from './gradebook/gradebook.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { ResponseModule } from './response/response.module';
     StudentModule,
     ParentModule,
     SubjectModule,
-    ResponseModule.forRoot()
+    ResponseModule.forRoot(),
+    GradebookModule
   ],
   controllers: [],
   providers: [],

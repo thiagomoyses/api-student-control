@@ -48,6 +48,15 @@ export class StudentService {
             if (getStudent) throw new ConflictException("Student already registered!");
 
 
+            //check if parent exist
+            const getParent = await this.prisma.parent.findUnique({
+                where: {
+                    id: dto.parent_id
+                }
+            });
+
+            if(!getParent) return new NotFoundException('Parent not found!');
+
             //save new student
             const student = await this.prisma.student.create({
                 data: {
@@ -87,7 +96,7 @@ export class StudentService {
                 }
             });
 
-            if (!getStudent) throw new NotFoundException("Student not found");
+            if (!getStudent) return new NotFoundException("Student not found");
 
             const updateStudent = await this.prisma.student.update({
                 where: {

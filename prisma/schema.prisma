@@ -22,7 +22,8 @@ model User {
   userRefCode String @unique
 
   student Student[]
-  parent Parent[]
+  parent  Parent[]
+  gradebook GradeBook[]
 
   @@map("users")
 }
@@ -39,7 +40,7 @@ model Parent {
   phone String  @unique
 
   userId String
-  user User @relation(fields: [userId], references: [userRefCode])
+  user   User   @relation(fields: [userId], references: [userRefCode])
 
   student Student[]
 
@@ -63,7 +64,7 @@ model Student {
   parent_id Int
   parent    Parent @relation(fields: [parent_id], references: [id])
 
-  subject    StudenSubject[]
+  subject GradeBook[]
 
   @@map("students")
 }
@@ -75,20 +76,25 @@ model Subject {
 
   name String @unique
 
-  student    StudenSubject[]
+  student GradeBook[]
 
   @@map("Subjects")
 }
 
-model StudenSubject {
+model GradeBook {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  student Student @relation(fields: [studentRef], references: [studentRefCode])
+  student    Student @relation(fields: [studentRef], references: [studentRefCode])
   studentRef String
 
-  subject Subject @relation(fields: [subjectId], references: [id])
+  subject   Subject @relation(fields: [subjectId], references: [id])
   subjectId Int
+
+  userId String
+  user User @relation(fields: [userId], references: [userRefCode])
+
+  grade Float?
 
   @@id([studentRef, subjectId])
 }
