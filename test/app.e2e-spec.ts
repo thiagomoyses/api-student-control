@@ -64,7 +64,7 @@ describe('# App e2e', () => {
           password: dto.password
         })
         .expectStatus(200)
-        .stores('userToken', 'access_token')
+        .stores('userToken', 'data.access_token')
 
       return postReq;
     });
@@ -88,7 +88,7 @@ describe('# App e2e', () => {
         })
         .withBody(dto)
         .expectStatus(201)
-        .stores('parentId', 'id');
+        .stores('parentId', 'data.id');
 
       parentId = '$S{parentId}';
 

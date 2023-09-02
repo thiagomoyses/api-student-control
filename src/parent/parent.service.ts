@@ -1,13 +1,14 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { ParentDto } from './dto';
 import { GetUser } from '../auth/decorator';
+import { ResponseService } from '../response/response.service';
 
 @Injectable()
 export class ParentService {
 
-    constructor(private prisma: PrismaService){}
+    constructor(private prisma: PrismaService, private readonly responseService: ResponseService){}
 
     async index(user: User){
         try {
@@ -18,9 +19,9 @@ export class ParentService {
                 }
             });
 
-            return this.response(parentList);
+            return this.responseService.positiveResponse(parentList);
         } catch (error) {
-            throw error;
+            throw new InternalServerErrorException('We had a probem, try again later!');
         }
     }
 
@@ -51,20 +52,10 @@ export class ParentService {
                 }
             });
 
-            return saveNewParent;
+            return this.responseService.positiveResponse(saveNewParent);
             
         } catch (error) {
-            throw error;
+            throw new InternalServerErrorException('We had a probem, try again later!');
         }
-    }
-
-
-    private response(payload){
-        const response = {
-            "message": "success",
-            "data": {payload}
-        }
-
-        return response;
     }
 }

@@ -7,9 +7,19 @@ import { StudentModule } from './student/student.module';
 import { JsonMiddleware } from './middlewares';
 import { ParentModule } from './parent/parent.module';
 import { SubjectModule } from './subject/subject.module';
+import { ResponseModule } from './response/response.module';
 
 @Module({
-  imports: [AuthModule, UserModule, PrismaModule, ConfigModule.forRoot({ isGlobal: true }), StudentModule, ParentModule, SubjectModule],
+  imports: [
+    AuthModule,
+    UserModule,
+    PrismaModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+    StudentModule,
+    ParentModule,
+    SubjectModule,
+    ResponseModule.forRoot()
+  ],
   controllers: [],
   providers: [],
 })

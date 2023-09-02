@@ -1,13 +1,14 @@
-import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
-import { StudentDto } from './dto';
+import { ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { StudenUpdateDto, StudentDto } from './dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { User } from '@prisma/client';
+import { ResponseService } from '../response/response.service';
 
 @Injectable()
 export class StudentService {
 
-    constructor(private prisma: PrismaService) { }
+    constructor(private prisma: PrismaService, private readonly responseService: ResponseService) { }
 
     async index(user: User) {
 
@@ -18,9 +19,9 @@ export class StudentService {
                 }
             });
 
-            return this.response(studentList);
+            return this.responseService.positiveResponse(studentList);
         } catch (error) {
-            throw error;
+            throw new InternalServerErrorException('We had a probem, try again later!');
         }
     }
 
@@ -38,13 +39,13 @@ export class StudentService {
             //check if student already exist
             const getStudent = await this.prisma.student.findFirst({
                 where: {
-                     firstName: dto.firstName,
-                     lastName: dto.lastName,
-                     userId: user.userRefCode
+                    firstName: dto.firstName,
+                    lastName: dto.lastName,
+                    userId: user.userRefCode
                 }
             });
 
-            if(getStudent) throw new ConflictException("Student already registered!");
+            if (getStudent) throw new ConflictException("Student already registered!");
 
 
             //save new student
@@ -62,7 +63,7 @@ export class StudentService {
 
             delete student.userId;
 
-            return this.response(student);
+            return this.responseService.positiveResponse(student);
         } catch (error) {
             if (error instanceof PrismaClientKnownRequestError) {
                 switch (error.code) {
@@ -72,18 +73,38 @@ export class StudentService {
                         break;
                 }
             } else {
-                throw error;
+                throw new InternalServerErrorException('We had a probem, try again later!');
             }
 
         }
     }
 
-    private response(payload) {
-        const response = {
-            "message": "success",
-            "data": { payload }
-        }
+    async update(id: number, dto: StudenUpdateDto) {
+        try {
+            const getStudent = await this.prisma.student.findUnique({
+                where: {
+                    id: id
+                }
+            });
 
-        return response;
+            if (!getStudent) throw new NotFoundException("Student not found");
+
+            const updateStudent = await this.prisma.student.update({
+                where: {
+                    id: getStudent.id
+                },
+                data: {
+                    firstName: dto.firstName || undefined,
+                    lastName: dto.lastName || undefined,
+                    email: dto.email || undefined,
+                    phone: dto.phone || undefined,
+                    parent_id: dto.parent_id || undefined
+                }
+            });
+
+            return this.responseService.positiveResponse(updateStudent);
+        } catch (error) {
+            throw new InternalServerErrorException('We had a probem, try again later!');
+        }
     }
 }

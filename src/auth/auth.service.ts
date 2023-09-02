@@ -1,17 +1,19 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { AuthDto, SignInDto } from "./dto";
 import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
+import { ResponseService } from "../response/response.service";
 
 @Injectable()
 export class AuthService {
     constructor(
         private prisma: PrismaService,
         private jwt: JwtService,
-        private config: ConfigService
+        private config: ConfigService,
+        private readonly responseService: ResponseService
     ) { }
 
     async signup(dto: AuthDto) {
@@ -47,7 +49,8 @@ export class AuthService {
                 }
             });
 
-            return user;
+            return this.responseService.positiveResponse(user);
+            
         } catch (error) {
             if (error instanceof PrismaClientKnownRequestError) {
                 switch (error.code) {
@@ -57,7 +60,7 @@ export class AuthService {
                         break;
                 }
             } else {
-                throw error;
+                throw new InternalServerErrorException('We had a probem, try again later!');
             }
         }
     }
@@ -81,10 +84,11 @@ export class AuthService {
             //guard condition, if pass incorrect, error
             if (!pwMatches) throw new ForbiddenException("Incorrect credentials!");
 
-            return this.signToken(user.id, user.userRefCode);
+            const token = await this.signToken(user.id, user.userRefCode);
+            return  this.responseService.positiveResponse(token);
 
         } catch (error) {
-            throw error;
+            throw new InternalServerErrorException('We had a probem, try again later!');
         }
     }
 

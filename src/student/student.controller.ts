@@ -1,7 +1,7 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtGuard } from '../auth/guard';
 import { StudentService } from './student.service';
-import { StudentDto } from './dto';
+import { StudenUpdateDto, StudentDto } from './dto';
 import { GetUser } from '../auth/decorator';
 import { User } from '@prisma/client';
 
@@ -21,5 +21,11 @@ export class StudentController {
     @Post('store')
     store(@GetUser() user: User, @Body() dto: StudentDto){
         return this.studentService.store(user, dto);
+    }
+
+    @HttpCode(HttpStatus.OK)
+    @Patch('update/:id')
+    update(@Param('id') id: number, @Body() dto: StudenUpdateDto){
+        return this.studentService.update(id, dto);
     }
 }
